@@ -1,26 +1,71 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import * as actionCreators from '../state/action-creators'
+import React from 'react';
+import { connect } from 'react-redux';
+import { inputChange, resetForm, postQuiz } from '../state/action-creators';
 
 export function Form(props) {
+  const { form, inputChange, postQuiz } = props;
 
-  const onChange = evt => {
+  const onChange = (evt) => {
+    const { name, value } = evt.target;
+    inputChange(name, value);
+  };
 
-  }
+  const onSubmit = (evt) => {
+    evt.preventDefault();
 
-  const onSubmit = evt => {
-
-  }
+    // Dispatch postQuiz action with form data
+    postQuiz(form);
+  };
 
   return (
     <form id="form" onSubmit={onSubmit}>
       <h2>Create New Quiz</h2>
-      <input maxLength={50} onChange={onChange} id="newQuestion" placeholder="Enter question" />
-      <input maxLength={50} onChange={onChange} id="newTrueAnswer" placeholder="Enter true answer" />
-      <input maxLength={50} onChange={onChange} id="newFalseAnswer" placeholder="Enter false answer" />
-      <button id="submitNewQuizBtn">Submit new quiz</button>
+      <input
+        name="newQuestion"
+        value={form.newQuestion}
+        maxLength={50}
+        onChange={onChange}
+        id="newQuestion"
+        placeholder="Enter question"
+      />
+      <input
+        name="newTrueAnswer"
+        value={form.newTrueAnswer}
+        maxLength={50}
+        onChange={onChange}
+        id="newTrueAnswer"
+        placeholder="Enter true answer"
+      />
+      <input
+        name="newFalseAnswer"
+        value={form.newFalseAnswer}
+        maxLength={50}
+        onChange={onChange}
+        id="newFalseAnswer"
+        placeholder="Enter false answer"
+      />
+     <button
+  id="submitNewQuizBtn"
+  disabled={
+    !form.newQuestion.trim() ||
+    !form.newTrueAnswer.trim() ||
+    !form.newFalseAnswer.trim()
+  }
+>
+  Submit new quiz
+</button>
     </form>
-  )
+  );
 }
 
-export default connect(st => st, actionCreators)(Form)
+const mapStateToProps = (state) => ({
+  form: state.form,
+});
+
+const mapDispatchToProps = {
+  inputChange,
+  resetForm,
+  postQuiz,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Form);
